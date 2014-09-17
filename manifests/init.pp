@@ -5,7 +5,9 @@ class puppet_master (
   $server        = $::settings::server,
   $r10k_enabled  = true,
   $puppet_remote = undef,
+  $puppet_base   = "${::settings::confdir}/environments",
   $hiera_remote  = undef,
+  $hiera_base    = "${::settings::confdir}/hieradata",
   $dns_alt_names = [
     $::hostname,
     $::fqdn,
@@ -15,6 +17,7 @@ class puppet_master (
 )  {
 
   validate_bool($ca_enabled)
+  validate_bool($r10k_enabled)
 
   File {
     owner  => 'pe-puppet',
@@ -53,20 +56,25 @@ class puppet_master (
   }
 
   if $r10k_enabled {
+    if ! $puppet_remote or $hiera_remote {
+      fail("r10k requires a remote repo for puppet and hiera")
+    }
+    validate_absolute_path($puppet_base)
+    validate_absolute_path($hiera_base)
     class { 'r10k':
       sources           => {
         'puppet' => {
-          'remote'  => 'https://github.com/beergeek/puppet-env.git',
-          'basedir' => "${::settings::confdir}/environments",
+          'remote'  => $puppet_remote,
+          'basedir' => $puppet_base,
           'prefix'  => false,
         },
         'hiera'  => {
-          'remote'  => 'https://github.com/beergeek/hiera-env.git',
-          'basedir' => "${::settings::confdir}/hieradata",
+          'remote'  => $hiera_remote,
+          'basedir' => $hiera_base,
           'prefix'  => false
         }
       },
-      purgedirs         => ["${::settings::confdir}/environments","${::settings::confdir}/hieradata"],
+      purgedirs         => [$puppet_base,$hiera_base],
       manage_modulepath => false,
     }
   }
