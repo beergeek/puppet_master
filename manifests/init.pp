@@ -3,6 +3,7 @@ class puppet_master (
   $ca_enabled    = false,
   $ca_server     = undef,
   $server        = $::settings::server,
+  $r10k_enabled  = true,
   $dns_alt_names = [
     $::hostname,
     $::fqdn,
@@ -12,6 +13,12 @@ class puppet_master (
 )  {
 
   validate_bool($ca_enabled)
+
+  File {
+    owner  => 'pe-puppet',
+    group  => 'pe-puppet',
+    mode   => '0644',
+  }
 
   @@host { $::fqdn:
     ensure       => 'present',
@@ -26,9 +33,9 @@ class puppet_master (
     ip           => '127.0.0.1',
   }
 
-  resources { 'host':
-    purge => true,
-  }
+  #resources { 'host':
+  #  purge => true,
+  #}
 
   Host <<| tag == 'masters' |>>
 
@@ -40,25 +47,26 @@ class puppet_master (
     ensure => file,
     owner  => 'root',
     group  => 'root',
-    mode   => '0644',
     source => 'puppet:///modules/puppet_master/hiera.yaml',
   }
 
-  class { 'r10k':
-    sources           => {
-      'puppet' => {
-        'remote'  => 'https://uber-dev:iw9a28AUw2832hau8@github.com/uberglobal/puppet.git',
-        'basedir' => "${::settings::confdir}/environments",
-        'prefix'  => false,
+  if $r10k_enabled {
+    class { 'r10k':
+      sources           => {
+        'puppet' => {
+          'remote'  => 'https://@github.com/beergeek/puppet-env.git',
+          'basedir' => "${::settings::confdir}/environments",
+          'prefix'  => false,
+        },
+        'hiera'  => {
+          'remote'  => 'https://github.com/beergeek/hiera-env.git',
+          'basedir' => "${::settings::confdir}/hieradata",
+          'prefix'  => false
+        }
       },
-      'hiera'  => {
-        'remote'  => 'https://uber-dev:iw9a28AUw2832hau8@github.com/uberglobal/hiera.git',
-        'basedir' => "${::settings::confdir}/hieradata",
-        'prefix'  => false
-      }
-    },
-    purgedirs         => ["${::settings::confdir}/environments","${::settings::confdir}/hieradata"],
-    manage_modulepath => false,
+      purgedirs         => ["${::settings::confdir}/environments","${::settings::confdir}/hieradata"],
+      manage_modulepath => false,
+    }
   }
 
   ini_setting { 'puppet_environmentpath':
@@ -109,4 +117,53 @@ class puppet_master (
     dns_alt_names => $dns_alt_names,
   }
 
+
+  # Welcome to crazy town for ActiveMQ and MCO!
+  file { '/etc/puppetlabs/puppet/ssl/public_keys/pe-internal-mcollective-servers.pem':
+    ensure => file,
+    content => file('/etc/puppetlabs/puppet/ssl/public_keys/pe-internal-mcollective-servers.pem'),
+  }
+  file { '/etc/puppetlabs/puppet/ssl/private_keys/pe-internal-mcollective-servers.pem':
+    ensure => file,
+    content => file('/etc/puppetlabs/puppet/ssl/private_keys/pe-internal-mcollective-servers.pem'),
+    mode    => '0640',
+  }
+  file { '/etc/puppetlabs/puppet/ssl/certs/pe-internal-mcollective-servers.pem':
+    ensure => file,
+    content => file('/etc/puppetlabs/puppet/ssl/certs/pe-internal-mcollective-servers.pem'),
+  }
+  file { '/etc/puppetlabs/puppet/ssl/public_keys/pe-internal-peadmin-mcollective-client.pem':
+    ensure => file,
+    content => file('/etc/puppetlabs/puppet/ssl/public_keys/pe-internal-peadmin-mcollective-client.pem'),
+  }
+  java_ks { 'puppetca:truststore':
+    ensure       => latest,
+    path         => [ '/opt/puppet/bin', '/usr/bin', '/bin', '/usr/sbin', '/sbin' ],
+    certificate  => '/etc/puppetlabs/puppet/ssl/certs/ca.pem',
+    target       => '/etc/puppetlabs/activemq/broker.ts',
+    password     => 'puppet',
+    trustcacerts => true,
+    before       => File['/etc/puppetlabs/activemq/broker.ts'],
+    notify       => Service['pe-activemq'],
+  }
+  java_ks { "${::clientcert}:keystore":
+    ensure      => latest,
+    path        => [ '/opt/puppet/bin', '/usr/bin', '/bin', '/usr/sbin', '/sbin' ],
+    target      => '/etc/puppetlabs/activemq/broker.ks',
+    certificate => "/etc/puppetlabs/puppet/ssl/certs/${clientcert}.pem",
+    private_key => "/etc/puppetlabs/puppet/ssl/private_keys/${clientcert}.pem",
+    password    => 'puppet',
+    before      => File['/etc/puppetlabs/activemq/broker.ks'],
+    notify      => Service['pe-activemq'],
+  }
+  file { '/etc/puppetlabs/activemq/broker.ts':
+    owner   => 'root',
+    group   => 'pe-activemq',
+    mode    => '0640',
+  }
+  file { '/etc/puppetlabs/activemq/broker.ks':
+    owner  => 'root',
+    group  => 'pe-activemq',
+    mode   => '0640',
+  }
 }

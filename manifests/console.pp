@@ -2,6 +2,12 @@ class puppet_master::console (
   $default_whitelist = [$::fqdn, 'pe-internal-dashbaord']
 ) {
 
+  if ! defined(Class['puppet_master::pe_httpd']) {
+    class { 'puppet_master::pe_httpd':
+     ca_enabled => true,
+    }
+  }
+
   $role = 'read-write'
 
   concat { '/etc/puppetlabs/console-auth/certificate_authorization.yml':
@@ -9,6 +15,7 @@ class puppet_master::console (
     group          => 'puppet-dashboard',
     mode           => '0640',
     ensure_newline => false,
+    notify         => Service['pe-httpd'],
   }
 
   concat::fragment { 'top':
