@@ -1,7 +1,14 @@
 class puppet_master (
-  $master     = $::fqdn,
-  $ca_enabled = false,
-  $ca_server  = undef,
+  $master        = $::fqdn,
+  $ca_enabled    = false,
+  $ca_server     = undef,
+  $server        = $::settings::server,
+  $dns_alt_names = [
+    $::hostname,
+    $::fqdn,
+    'puppet',
+    "puppet.${::domain}",
+  ],
 )  {
 
   validate_bool($ca_enabled)
@@ -24,6 +31,10 @@ class puppet_master (
   }
 
   Host <<| tag == 'masters' |>>
+
+  #export for PuppetDB and Console certificate
+  @@puppet_master::console::whitelist_entry { $::fqdn: }
+  @@puppet_master::puppetdb::whitelist_entry { $::fqdn: }
 
   file { '/etc/puppetlabs/puppet/hiera.yaml':
     ensure => file,
@@ -92,9 +103,10 @@ class puppet_master (
     }
   }
 
-  class { 'pe_httpd':
-    server    => $::settings::server,
-    ca_server => $ca_enabled,
+  class { 'puppet_master::pe_httpd':
+    ca_enabled    => $ca_enabled,
+    server        => $server,
+    dns_alt_names => $dns_alt_names,
   }
 
 }

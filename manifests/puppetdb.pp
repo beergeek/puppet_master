@@ -1,8 +1,8 @@
 class puppet_master::puppetdb (
-  $default_whitelist = [$::fqdn, 'pe-internal-dashbaord']
+  $default_whitelist = [$::fqdn, 'pe-internal-dashboard']
 ) {
 
-  file { '/etc/puppetlabs/puppetdb/certificate_whitelist':
+  file { '/etc/puppetlabs/puppetdb/certificate-whitelist':
     ensure => file,
     owner  => 'pe-puppetdb',
     group  => 'pe-puppetdb',

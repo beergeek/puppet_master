@@ -1,4 +1,4 @@
-define puppet_master::whitelist_entry {
+define puppet_master::puppetdb::whitelist_entry {
 
   if ! defined(File_line[$name]) {
     file_line { "puppetdb_whitelist:${name}":
