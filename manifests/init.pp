@@ -4,6 +4,8 @@ class puppet_master (
   $ca_server     = undef,
   $server        = $::settings::server,
   $r10k_enabled  = true,
+  $puppet_remote = undef,
+  $hiera_remote  = undef,
   $dns_alt_names = [
     $::hostname,
     $::fqdn,
@@ -54,7 +56,7 @@ class puppet_master (
     class { 'r10k':
       sources           => {
         'puppet' => {
-          'remote'  => 'https://@github.com/beergeek/puppet-env.git',
+          'remote'  => 'https://github.com/beergeek/puppet-env.git',
           'basedir' => "${::settings::confdir}/environments",
           'prefix'  => false,
         },
