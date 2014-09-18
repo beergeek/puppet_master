@@ -1,6 +1,6 @@
 class puppet_master::console (
-  $default_whitelist = [$::fqdn, 'pe-internal-dashbaord']
-  $all_in_one        = true, 
+  $default_whitelist = [$::fqdn, 'pe-internal-dashbaord'],
+  $all_in_one        = true,
 ) {
 
   if ! defined(Class['puppet_master::pe_httpd']) {
@@ -26,10 +26,12 @@ class puppet_master::console (
     order   => '01',
   }
 
-  concat::fragment { $::fqdn:
-    target  => '/etc/puppetlabs/console-auth/certificate_authorization.yml',
-    content => "${::fqdn}:\n  role: read-write\n",
-    order   => '02',
+  if $all_in_one == false {
+    concat::fragment { $::fqdn:
+      target  => '/etc/puppetlabs/console-auth/certificate_authorization.yml',
+      content => "${::fqdn}:\n  role: read-write\n",
+      order   => '02',
+    }
   }
 
   concat::fragment { 'pe-internal-dashbaord':

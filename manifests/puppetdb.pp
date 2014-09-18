@@ -1,5 +1,6 @@
 class puppet_master::puppetdb (
-  $default_whitelist = [$::fqdn, 'pe-internal-dashboard']
+  $default_whitelist = [$::fqdn, 'pe-internal-dashboard'],
+  $all_in_one        = true,
 ) {
 
   file { '/etc/puppetlabs/puppetdb/certificate-whitelist':
@@ -9,7 +10,9 @@ class puppet_master::puppetdb (
     mode   => '0600',
   }
 
-  puppet_master::puppetdb::whitelist_entry { $default_whitelist: }
+  if $all_in_one == false {
+    puppet_master::puppetdb::whitelist_entry { $default_whitelist: }
+  }
 
   Puppet_master::Puppetdb::Whitelist_entry <<| |>>
 }
