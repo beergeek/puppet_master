@@ -26,6 +26,11 @@ class puppet_master::activemq (
       ensure => file,
       content => file('/etc/puppetlabs/puppet/ssl/public_keys/pe-internal-peadmin-mcollective-client.pem'),
     }
+
+    file { '/etc/puppetlabs/puppet/ssl/public_keys/pe-internal-puppet-console-mcollective-client.pem':
+      ensure  => file,
+      content => file('/etc/puppetlabs/puppet/ssl/public_keys/pe-internal-puppet-console-mcollective-client.pem'),
+    }
   }
 
   java_ks { 'puppetca:truststore':
