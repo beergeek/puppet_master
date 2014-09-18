@@ -1,7 +1,7 @@
 class puppet_master::mom (
 ) {
 
-  class { 'puppet_master::pe_httpd':
+  class { 'puppet_master':
     ca_enabled => true,
   }
 
