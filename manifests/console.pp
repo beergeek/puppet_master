@@ -1,10 +1,12 @@
 class puppet_master::console (
   $default_whitelist = [$::fqdn, 'pe-internal-dashbaord']
+  $all_in_one        = true, 
 ) {
 
   if ! defined(Class['puppet_master::pe_httpd']) {
     class { 'puppet_master::pe_httpd':
-     ca_enabled => true,
+     ca_enabled     => true,
+     manage_console => false,
     }
   }
 

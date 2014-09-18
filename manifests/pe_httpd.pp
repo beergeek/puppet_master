@@ -1,6 +1,8 @@
 class puppet_master::pe_httpd (
   $ca_enabled    = false,
   $server        = $::settings::server,
+  $manage_master  = true,
+  $manage_console = false,
   $dns_alt_names = [
     $::hostname,
     $::fqdn,
@@ -19,10 +21,12 @@ class puppet_master::pe_httpd (
     ensure => directory,
   }
 
-  file { '/etc/puppetlabs/httpd/conf.d/puppetmaster.conf':
-    ensure  => file,
-    content => template('puppet_master/puppetmaster.conf'),
-    notify  => Service['pe-httpd'],
+  if $manage_master {
+    file { '/etc/puppetlabs/httpd/conf.d/puppetmaster.conf':
+      ensure  => file,
+      content => template('puppet_master/puppetmaster.conf'),
+      notify  => Service['pe-httpd'],
+    }
   }
 
   service { 'pe-httpd':

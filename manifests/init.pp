@@ -18,6 +18,9 @@ class puppet_master (
 
   validate_bool($ca_enabled)
   validate_bool($r10k_enabled)
+  validate_array($dns_alt_names)
+  validate_absolute_path($puppet_base)
+  validate_absolute_path($hiera_base)
 
   File {
     owner  => 'pe-puppet',
@@ -127,53 +130,4 @@ class puppet_master (
     dns_alt_names => $dns_alt_names,
   }
 
-
-  # Welcome to crazy town for ActiveMQ and MCO!
-  file { '/etc/puppetlabs/puppet/ssl/public_keys/pe-internal-mcollective-servers.pem':
-    ensure => file,
-    content => file('/etc/puppetlabs/puppet/ssl/public_keys/pe-internal-mcollective-servers.pem'),
-  }
-  file { '/etc/puppetlabs/puppet/ssl/private_keys/pe-internal-mcollective-servers.pem':
-    ensure => file,
-    content => file('/etc/puppetlabs/puppet/ssl/private_keys/pe-internal-mcollective-servers.pem'),
-    mode    => '0640',
-  }
-  file { '/etc/puppetlabs/puppet/ssl/certs/pe-internal-mcollective-servers.pem':
-    ensure => file,
-    content => file('/etc/puppetlabs/puppet/ssl/certs/pe-internal-mcollective-servers.pem'),
-  }
-  file { '/etc/puppetlabs/puppet/ssl/public_keys/pe-internal-peadmin-mcollective-client.pem':
-    ensure => file,
-    content => file('/etc/puppetlabs/puppet/ssl/public_keys/pe-internal-peadmin-mcollective-client.pem'),
-  }
-  java_ks { 'puppetca:truststore':
-    ensure       => latest,
-    path         => [ '/opt/puppet/bin', '/usr/bin', '/bin', '/usr/sbin', '/sbin' ],
-    certificate  => '/etc/puppetlabs/puppet/ssl/certs/ca.pem',
-    target       => '/etc/puppetlabs/activemq/broker.ts',
-    password     => 'puppet',
-    trustcacerts => true,
-    before       => File['/etc/puppetlabs/activemq/broker.ts'],
-    notify       => Service['pe-activemq'],
-  }
-  java_ks { "${::clientcert}:keystore":
-    ensure      => latest,
-    path        => [ '/opt/puppet/bin', '/usr/bin', '/bin', '/usr/sbin', '/sbin' ],
-    target      => '/etc/puppetlabs/activemq/broker.ks',
-    certificate => "/etc/puppetlabs/puppet/ssl/certs/${clientcert}.pem",
-    private_key => "/etc/puppetlabs/puppet/ssl/private_keys/${clientcert}.pem",
-    password    => 'puppet',
-    before      => File['/etc/puppetlabs/activemq/broker.ks'],
-    notify      => Service['pe-activemq'],
-  }
-  file { '/etc/puppetlabs/activemq/broker.ts':
-    owner   => 'root',
-    group   => 'pe-activemq',
-    mode    => '0640',
-  }
-  file { '/etc/puppetlabs/activemq/broker.ks':
-    owner  => 'root',
-    group  => 'pe-activemq',
-    mode   => '0640',
-  }
 }
