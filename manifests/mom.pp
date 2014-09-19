@@ -18,10 +18,12 @@ class puppet_master::mom (
 
   # doing this as auth_conf module is a pain in the arse
   file { '/etc/puppetlabs/puppet/auth.conf':
-    ensure => file,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
-    source => 'puppet:///modules/puppet_master/auth.conf',
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    source  => 'puppet:///modules/puppet_master/auth.conf',
+    notify  => Service['pe-httpd'],
+    require => Class['puppet_master'],
   }
 }
