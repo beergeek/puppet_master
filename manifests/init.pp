@@ -8,6 +8,8 @@ class puppet_master (
   $puppet_base   = "${::settings::confdir}/environments",
   $hiera_remote  = undef,
   $hiera_base    = "${::settings::confdir}/hieradata",
+  $vip           = "puppet.${::domain}",
+  $hiera_file    = 'puppet:///modules/puppet_master/hiera.yaml',
   $dns_alt_names = [
     $::hostname,
     $::fqdn,
@@ -55,7 +57,12 @@ class puppet_master (
     ensure => file,
     owner  => 'root',
     group  => 'root',
-    source => 'puppet:///modules/puppet_master/hiera.yaml',
+    source => $hiera_file,
+  }
+
+  file { '/etc/puppetlabs/puppet/manifests/site.pp':
+    ensure  => file,
+    content => template('puppet_master/site.pp.erb'),
   }
 
   if $r10k_enabled {

@@ -13,6 +13,7 @@ class puppet_master::mom (
     puppet_base   => $puppet_base,
     hiera_remote  => $hiera_remote,
     hiera_base    => $hiera_base,
+    vip           => $::fqdn,
   }
 
   # doing this as auth_conf module is a pain in the arse
