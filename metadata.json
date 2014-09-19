@@ -1,0 +1,17 @@
+{
+  "name": "beergeek-puppet_master",
+  "version": "0.1.0",
+  "author": "beergeek",
+  "summary": "Module to manage multi-master Puppet",
+  "license": "Apache 2.0",
+  "source": "https://github.com/beergeek/puppet_master",
+  "project_page": "https://github.com/beergeek/puppet_master",
+  "issues_url": "https://github.com/beergeek/puppet_master/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_range": ">= 1.0.0"
+    }
+  ]
+}
+

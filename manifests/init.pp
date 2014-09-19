@@ -1,3 +1,40 @@
+# == Class: puppet_master
+#
+# Full description of class puppet_master here.
+#
+# === Parameters
+#
+# Document parameters here.
+#
+# [*sample_parameter*]
+#   Explanation of what this parameter affects and what it defaults to.
+#   e.g. "Specify one or more upstream ntp servers as an array."
+#
+# === Variables
+#
+# Here you should define a list of variables that this module would require.
+#
+# [*sample_variable*]
+#   Explanation of how this variable affects the funtion of this class and if
+#   it has a default. e.g. "The parameter enc_ntp_servers must be set by the
+#   External Node Classifier as a comma separated list of hostnames." (Note,
+#   global variables should be avoided in favor of class parameters as
+#   of Puppet 2.6.)
+#
+# === Examples
+#
+#  class { puppet_master:
+#    servers => [ 'pool.ntp.org', 'ntp.local.company.com' ],
+#  }
+#
+# === Authors
+#
+# Author Name <author@domain.com>
+#
+# === Copyright
+#
+# Copyright 2014 Your name here, unless otherwise noted.
+#
 class puppet_master (
   $master        = $::fqdn,
   $ca_enabled    = false,
@@ -56,6 +93,7 @@ class puppet_master (
   @@puppet_master::console::whitelist_entry { $::fqdn: }
   @@puppet_master::puppetdb::whitelist_entry { $::fqdn: }
 
+  # manage our Hiera config
   file { '/etc/puppetlabs/puppet/hiera.yaml':
     ensure => file,
     owner  => 'root',
@@ -63,11 +101,13 @@ class puppet_master (
     source => $hiera_file,
   }
 
+  # manage the main site.pp (as we are managing the filebucket
   file { '/etc/puppetlabs/puppet/manifests/site.pp':
     ensure  => file,
     content => template('puppet_master/site.pp.erb'),
   }
 
+  # managed r10k if desired
   if $r10k_enabled {
     if ! $puppet_remote or $hiera_remote {
       fail("r10k requires a remote repo for puppet and hiera")
@@ -92,6 +132,7 @@ class puppet_master (
     }
   }
 
+  # we are going to use directory envionrments as default
   ini_setting { 'puppet_environmentpath':
     ensure  => present,
     path    => '/etc/puppetlabs/puppet/puppet.conf',
@@ -124,6 +165,7 @@ class puppet_master (
     value   => $ca_enabled,
   }
 
+  # if we are not the CA we need to provide the address
   if $ca_enabled == false {
     ini_setting { 'puppet_ca_server':
       ensure  => present,
@@ -134,6 +176,7 @@ class puppet_master (
     }
   }
 
+  # call the pe_httpd class to manage Puppet Apache
   class { 'puppet_master::pe_httpd':
     ca_enabled    => $ca_enabled,
     server        => $server,
