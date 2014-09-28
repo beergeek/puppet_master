@@ -1,7 +1,35 @@
+# == Class: puppet_master::activemq
+#
+# Class to manage ActiveMQ services..
+#
+# === Parameters
+#
+# [*keystore_passwd*]
+#   Password for Java Keystore.
+#   No default!
+#
+# [*export_keys*]
+#   Boolean value to determine if the exported ActiveMQ keys are imported.
+#   Default is in puppet_master::params
+#   Default is true.
+#
+# === Examples
+#
+#  class { puppet_master:
+#  }
+#
+# === Authors
+#
+# Brett Gray <brett.gray@puppetlabs.com>
+#
+# === Copyright
+#
+# Copyright 2014 Brett Gray.
+#
 class puppet_master::activemq (
   $keystore_passwd,
-  $export_keys = true,
-) {
+  $export_keys      = $puppet_master::params::export_keys,
+) inherits puppet_master::params {
 
   # Welcome to crazy town for ActiveMQ and MCO!
   if $export_keys {
