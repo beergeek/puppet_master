@@ -83,7 +83,7 @@ class puppet_master::mom (
   $vip           = $puppet_master::params::vip,
 ) {
 
-  class { 'puppet_master':
+  class { 'puppet_master::compile':
     ca_enabled    => true,
     dns_alt_names => $dns_alt_names,
     hiera_base    => $hiera_base,
