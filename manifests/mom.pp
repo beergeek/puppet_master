@@ -102,7 +102,7 @@ class puppet_master::mom (
     group   => 'root',
     mode    => '0644',
     source  => 'puppet:///modules/puppet_master/auth.conf',
-    notify  => Service['httpd'],
+    notify  => Service['pe-httpd'],
     require => Class['puppet_master::compile'],
   }
 }
