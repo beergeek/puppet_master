@@ -179,7 +179,7 @@ class puppet_master::compile (
     path    => '/etc/puppetlabs/puppet/puppet.conf',
     section => 'main',
     setting => 'environmentpath',
-    value   => "${::settings::confdir}/environments",
+    value   => '$confdir/environments',
   }
 
   ini_setting { 'puppet_basemodulepath':
@@ -187,7 +187,7 @@ class puppet_master::compile (
     path    => '/etc/puppetlabs/puppet/puppet.conf',
     section => 'main',
     setting => 'basemodulepath',
-    value   => "${::settings::confdir}/modules:/opt/puppet/share/puppet/modules",
+    value   => '$confdir/modules:/opt/puppet/share/puppet/modules',
   }
 
   ini_setting { 'puppet_server':
