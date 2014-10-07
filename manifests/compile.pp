@@ -64,8 +64,8 @@
 #     ca_enabled    => false,
 #     ca_server     => 'mom0.puppetlabs.local',
 #     server        => 'mom0.puppetlabs.local',
-#     vip           => 'puppet.uberu.local',
-#     dns_alt_names => ['cbr1uberupcom1','cbr1uberupcom1.uberu.local','puppet','puppet.uberu.local'],
+#     vip           => 'puppet.puppetlabs.local',
+#     dns_alt_names => ['com1','com1.puppetlabs.local','puppet','puppet.puppetlabs.local'],
 #  }
 #
 # === Authors

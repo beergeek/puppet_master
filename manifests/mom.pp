@@ -4,15 +4,6 @@
 #
 # === Parameters
 #
-# [*ca_enabled*]
-#   Boolean value to determine if the node has the CA service enabled.
-#   Default is false,
-#
-# [*ca_server*]
-#   Host name (string) of the CA if the current node is not.
-#   Default to undef
-#   Required if ca_enabled is false.
-#
 # [*dns_alt_names*]
 #   Array of DNS Alt Names used for the server alias within the puppetmaster.conf fir pe-httpd
 #   Defaults to [ $::hostname, $::fqdn, 'puppet', "puppet.${::domain}"]
@@ -54,13 +45,15 @@
 #
 # === Examples
 #
-#  class { puppet_master:
-#     master        => 'mom0.puppetlabs.local',
-#     ca_enabled    => false,
-#     ca_server     => 'mom0.puppetlabs.local',
-#     server        => 'mom0.puppetlabs.local',
-#     vip           => 'puppet.uberu.local',
-#     dns_alt_names => ['cbr1uberupcom1','cbr1uberupcom1.uberu.local','puppet','puppet.uberu.local'],
+#  class { 'puppet_master::mom':
+#     hiera_base    => '/etc/puppetlabs/puppet/hieradata',
+#     hiera_remote  => 'https://github.com/glarizza/hiera.git',
+#     puppet_base   => '/etc/puppetlabs/puppet/environments',
+#     puppet_remote => 'https://github.com/glarizza/puppet.git',
+#     purge_hosts   => false,
+#     r10k_enabled  => true,
+#     vip           => 'puppet.puppetlabs.local',
+#     dns_alt_names => ['ca','ca.puppetlabs.local','puppet','puppet.puppetlabs.local'],
 #  }
 #
 # === Authors

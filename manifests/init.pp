@@ -1,11 +1,7 @@
 # == Class: puppet_master
 #
-# Full description of class puppet_master here.
+# A module to manage a multi master environment
 #
-# === Examples
-#
-#  class { puppet_master:
-#  }
 #
 # === Authors
 #

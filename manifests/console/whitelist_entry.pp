@@ -14,7 +14,7 @@
 #
 # === Examples
 #
-#  puppet_master::console::whitelist_entry { 'cbr1uberucom1.uberu.local':
+#  puppet_master::console::whitelist_entry { 'com1.puppetlabs.local':
 #     role  => [$::fqdn, 'pe-internal-dashbaord'],
 #     order => '20',
 #  }

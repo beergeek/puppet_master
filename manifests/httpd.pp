@@ -31,9 +31,9 @@
 #
 #  class { 'puppet_master::httpd':
 #     ca_enabled    => false,
-#     server        => 'cbr1uberupmom1.uberu.local',
+#     server        => 'cbr1puppetlabspmom1.puppetlabs.local',
 #     manage_master => true,
-#     dns_alt_names => ['cbr1uberupcom1','cbr1uberupcom1.uberu.local','puppet','puppet.uberu.local'],
+#     dns_alt_names => ['com1','com1.puppetlabs.local','puppet','puppet.puppetlabs.local'],
 #  }
 #
 # === Authors

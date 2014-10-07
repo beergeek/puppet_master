@@ -4,7 +4,7 @@
 #
 # === Examples
 #
-#  puppet_master::puppetdb::whitelist_entry { 'cbr1uberupcom3.uberu.local':
+#  puppet_master::puppetdb::whitelist_entry { 'com1.puppetlabs.local':
 #  }
 #
 # === Authors
