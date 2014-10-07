@@ -70,7 +70,7 @@ To configure the master as a MOM the following can be performed:
 ```puppet
     class { 'puppet_master::mom':
       hiera_base    => '/etc/puppetlabs/puppet/hieradata',
-      hiera_file    => '/tc/puppetlabs/puppet/hiera.yaml',
+      hiera_file    => 'puppet:///modules/puppet_master/hiera.yaml',
       hiera_remote  => 'https://github.com/glarizza/hiera.git',
       puppet_base   => '/etc/puppetlabs/puppet/environments',
       puppet_remote => 'https://github.com/glarizza/puppet.git',
@@ -109,7 +109,7 @@ To make the Compile master function perform the following:
      ca_server     => 'ca.puppetlabs.local'
      dns_alt_names => ['com1','com1.puppetlabs.local','puppet','puppet.puppetlabs.local'],
      hiera_base    => '/etc/puppetlabs/puppet/hieradata',
-     hiera_file    => '/tc/puppetlabs/puppet/hiera.yaml',
+     hiera_file    => 'puppet:///modules/puppet_master/hiera.yaml',
      hiera_remote  => 'https://github.com/glarizza/hiera.git',
      master        => 'ca.puppetlabs.local',
      puppet_base   => '/etc/puppetlabs/puppet/environments',
