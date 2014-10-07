@@ -13,6 +13,10 @@
 #   Default to undef
 #   Required if ca_enabled is false.
 #
+# [*dns_alt_names*]
+#   Array of DNS Alt Names used for the server alias within the puppetmaster.conf for pe-httpd
+#   Defaults to [ $::hostname, $::fqdn, 'puppet', "puppet.${::domain}"]
+#
 # [*hiera_base*]
 #   Hiera data directory on node.
 #   Default is "${::settings::confdir}/hieradata".
@@ -52,20 +56,21 @@
 #   Defaults to puppet.${::domain}
 #   Required.
 #
-# [*dns_alt_names*]
-#   Array of DNS Alt Names used for the server alias within the puppetmaster.conf for pe-httpd
-#   Defaults to [ $::hostname, $::fqdn, 'puppet', "puppet.${::domain}"]
-#   Required.
-#
 # === Examples
 #
-#  class { puppet_master:
-#     master        => 'mom0.puppetlabs.local',
+#  class { puppet_master::compile':
 #     ca_enabled    => false,
-#     ca_server     => 'mom0.puppetlabs.local',
-#     server        => 'mom0.puppetlabs.local',
-#     vip           => 'puppet.puppetlabs.local',
+#     ca_server     => 'ca.puppetlabs.local'
 #     dns_alt_names => ['com1','com1.puppetlabs.local','puppet','puppet.puppetlabs.local'],
+#     hiera_base    => '/etc/puppetlabs/puppet/hieradata',
+#     hiera_file    => 'puppet:///modules/puppet_master/hiera.yaml',
+#     hiera_remote  => 'https://github.com/glarizza/hiera.git',
+#     master        => 'ca.puppetlabs.local',
+#     puppet_base   => '/etc/puppetlabs/puppet/environments',
+#     puppet_remote => 'https://github.com/glarizza/puppet.git',
+#     purge_hosts   => false,
+#     r10k_enabled  => true,
+#     vip           => 'puppet.puppetlabs.local',
 #  }
 #
 # === Authors
@@ -79,6 +84,7 @@
 class puppet_master::compile (
   $ca_enabled    = $puppet_master::params::ca_enabled,
   $ca_server     = $puppet_master::params::ca_server,
+  $dns_alt_names = $puppet_master::params::dns_alt_names,
   $hiera_base    = $puppet_master::params::hiera_base,
   $hiera_file    = $puppet_master::params::hiera_file,
   $hiera_remote  = $puppet_master::params::hiera_remote,
@@ -88,10 +94,10 @@ class puppet_master::compile (
   $purge_hosts   = $puppet_master::params::purge_hosts,
   $r10k_enabled  = $puppet_master::params::r10k_enabled,
   $vip           = $puppet_master::params::vip,
-  $dns_alt_names = $puppet_master::params::dns_alt_names,
 ) inherits puppet_master::params {
 
   validate_bool($ca_enabled)
+  validate_bool($purge_hosts)
   validate_bool($r10k_enabled)
   validate_array($dns_alt_names)
   validate_absolute_path($puppet_base)
@@ -118,7 +124,7 @@ class puppet_master::compile (
 
   if $purge_hosts {
     resources { 'host':
-      purge => true,
+      purge => $purge_hosts,
     }
   }
 

@@ -47,6 +47,7 @@
 #
 #  class { 'puppet_master::mom':
 #     hiera_base    => '/etc/puppetlabs/puppet/hieradata',
+#     hiera_file    => 'puppet:///modules/puppet_master/hiera.yaml',
 #     hiera_remote  => 'https://github.com/glarizza/hiera.git',
 #     puppet_base   => '/etc/puppetlabs/puppet/environments',
 #     puppet_remote => 'https://github.com/glarizza/puppet.git',
