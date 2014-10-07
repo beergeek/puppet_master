@@ -15,41 +15,91 @@
 
 ## Overview
 
-A one-maybe-two sentence summary of what the module does/what problem it solves.
-This is your 30 second elevator pitch for your module. Consider including
-OS/Puppet version it works with.
+This Module is to manage a Multi Master environment with a single MOM (all-in-one or split installations)
+and multiple compile masters.
 
 ## Module Description
 
-If applicable, this section should have a brief description of the technology
-the module integrates with and what that integration enables. This section
-should answer the questions: "What does this module *do*?" and "Why would I use
-it?"
+The MOM, in an all-in-one installation will contain the CA, PuppetDB, Console, Postgresql, ActiveMQ Hub.
+In a split environment the MOM will contain the CA and ActiveMQ Hub.
+The MOM is the compile master for ALL Puppet infrastructure.
 
-If your module has a range of functionality (installation, configuration,
-management, etc.) this is the time to mention it.
+The Compile masters contain the Puppet cataolg compile service and an ActiveMQ Spoke.
+
+The Compile masters redirect all certificate traffic to the MOM.
+
+Agents do not communicate with the MOM ever!  Agents only commnicate with the Compile masters.
+
+The Compile masters are designed to be behind a load balancer with a common VIP.  The MOM server(s) (all-in-one or split)
+are designed to be protected behind firewalls with very limited access (no access from agents).
+
+The module will manage the environment after inital installation of the MOM server(s) and Compile masters.
+
 
 ## Setup
 
 ### What puppet_master affects
 
-* A list of files, packages, services, or operations that the module will alter,
-  impact, or execute on the system it's installed on.
-* This is a great place to stick any warnings.
-* Can be in list or paragraph form.
+On MOM
+* auth.conf
+* PuppetDB certificate whitelist entries for MOM and Compile masters
+* Console certificate whitelist entries for MOM and Compile masters
 
-### Setup Requirements **OPTIONAL**
+On Compile masters
+* ActiveMQ certs & keys
+* ActiveMQ Java Keystore files
+* puppetmaster.conf certificate redirection
 
-If your module requires anything extra before setting up (pluginsync enabled,
-etc.), mention it here.
+On MOM and Compile masters
+* Host entries
+* hiera.yaml
+* r10k for Hiera and Puppet modules (if desired)
+* Environment directories
+* Agent's server
+* pe-httpd server
+* puppetmaster.conf
 
 ### Beginning with puppet_master
 
-The very basic steps needed for a user to get the module up and running.
+The files/hiera.yaml should be modified as required
 
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you may wish to include an additional section here: Upgrading
-(For an example, see http://forge.puppetlabs.com/puppetlabs/firewall).
+Install a PE 3.3.x Puppet Master as per normal.
+Install r10k if desired and configure.
+To configure the master as a MOM the following can be performed:
+
+```puppet
+    class { 'puppet_master::mom':
+      hiera_base    => '/etc/puppetlabs/puppet/hieradata',
+      hiera_remote  => 'https://github.com/glarizza/hiera.git',
+      puppet_base   => '/etc/puppetlabs/puppet/environments',
+      puppet_remote => 'https://github.com/glarizza/puppet.git',
+      purge_hosts   => false,
+      r10k_enabled  => true,
+      vip           => 'puppet.puppetlabs.local',
+      dns_alt_names => ['ca','ca.puppetlabs.local','puppet','puppet.puppetlabs.local'],
+    }
+```
+For the PuppetDB instance (the MOM in an all-in-one) perform:
+
+```puppet
+  class { 'puppet_master::puppetdb':
+     default_whitelist => [$::fqdn, 'pe-internal-dashboard'],
+     all_in_one        => true,
+  }
+```
+For the Console instance (the MOM in an all-in-one) perform:
+```puppet
+  class { puppet_master::console:
+     default_whitelist => [$::fqdn, 'pe-internal-dashbaord'],
+     all_in_one        => true,
+  }
+```
+
+For Compile masters, the MOM must exist first.
+Create an answers file with:
+* The MOM is the server for the Compile master.
+* The settings for PuppetDB and Console pointing at the correct node (MOM if all-in-one)
+Install Puppet as normal. On completion delete the ActiveMQ broker.ts and broker.ks files.
 
 ## Usage
 
