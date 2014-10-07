@@ -142,54 +142,54 @@ and
 
 ####puppet_master::compile
 
-####`ca_enabled`
+#####`ca_enabled`
 Boolean value to determine if the node has the CA service enabled.
 Default is false,
 
-####`ca_server`
+#####`ca_server`
 Host name (string) of the CA if the current node is not.
 Default to undef
 Required if ca_enabled is false.
 
-####`dns_alt_names`
+#####`dns_alt_names`
 Array of DNS Alt Names used for the server alias within the puppetmaster.conf for pe-httpd
 Defaults to [ $::hostname, $::fqdn, 'puppet', "puppet.${::domain}"]
 
-####`hiera_base`
+#####`hiera_base`
 Hiera data directory on node.
 Default is "${::settings::confdir}/hieradata".
 
-####`hiera_file`
+#####`hiera_file`
 Location of source for Hiera config file.
 Defaults to 'puppet:///modules/puppet_master/hiera.yaml'.
 
-####`hiera_remote`
+#####`hiera_remote`
 URL of the remote GIT repo for Hiera.
 Required if ca_enabled is false.
 
-####`master`
+#####`master`
 Name of the Puppet master this node will use as its server.  Should be the Master of Masters.
 Default os $::fqdn
 Required.
 
-####`puppet_base`
+#####`puppet_base`
 Directory for the Puppet environments.
 Targeted towards directory environments.
 Default is "${::settings::confdir}/environments".
 
-####`puppet_remote`
+#####`puppet_remote`
 URL of remote GIT repo for Puppetfile.
 Default is undef.
 
-####`purge_hosts`
+#####`purge_hosts`
 Boolean value to determine if hosts file is purged of non-Puppet managed entries.
 Default is false.
 
-####`r10k_enabled`
+#####`r10k_enabled`
 Boolean value to determine if r10k is managed by Puppet.
 Default is true.
 
-####`vip`
+#####`vip`
 VIP name that will be used in the site.pp for the filebucket location.
 Defaults to puppet.${::domain}
 Required.
