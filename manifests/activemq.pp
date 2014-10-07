@@ -15,7 +15,9 @@
 #
 # === Examples
 #
-#  class { puppet_master:
+#  class { 'puppet_master::activemq':
+#    keystore_passwd => 'g@ry_w3@ars_fl0ppy_sh03s',
+#    export_keys     => true,
 #  }
 #
 # === Authors

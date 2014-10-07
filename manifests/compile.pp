@@ -150,7 +150,7 @@ class puppet_master::compile (
 
   # managed r10k if desired
   if $r10k_enabled {
-    if ! $puppet_remote or $hiera_remote {
+    if ! ($puppet_remote and $hiera_remote) {
       fail("r10k requires a remote repo for puppet and hiera")
     }
     validate_absolute_path($puppet_base)

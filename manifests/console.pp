@@ -7,13 +7,13 @@
 #
 # Defaults in puppet_master::params
 #
-# [*default_whitelist*]
-#   An array of the default entries in the whitelist
-#   Default is [::fqdn, 'pe-internal-dashbaord']
-#
 # [*all_in_one*]
 #   Boolean value to determine if the node is an all-in-one installation or split
 #   Default is true.
+#
+# [*default_whitelist*]
+#   An array of the default entries in the whitelist
+#   Default is [::fqdn, 'pe-internal-dashbaord']
 #
 # === Examples
 #
