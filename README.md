@@ -347,15 +347,9 @@ Default is '10'.
 
 ## Limitations
 
-This is where you list OS compatibility, version compatibility, etc.
+Tested on Centos6.5
 
 ## Development
 
-Since your module is awesome, other users will want to play with it. Let them
-know what the ground rules for contributing are.
+PRs welcome
 
-## Release Notes/Contributors/Etc **Optional**
-
-If you aren't using changelog, put your release notes here (though you should
-consider using changelog). You may also add any additional sections you feel are
-necessary or important to include here. Please use the `## ` header.
