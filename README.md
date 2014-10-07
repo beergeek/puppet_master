@@ -194,9 +194,156 @@ VIP name that will be used in the site.pp for the filebucket location.
 Defaults to puppet.${::domain}
 Required.
 
+```puppet
+  class { 'puppet_master::compile':
+     ca_enabled    => false,
+     ca_server     => 'ca.puppetlabs.local'
+     dns_alt_names => ['com1','com1.puppetlabs.local','puppet','puppet.puppetlabs.local'],
+     hiera_base    => '/etc/puppetlabs/puppet/hieradata',
+     hiera_file    => '/tc/puppetlabs/puppet/hiera.yaml',
+     hiera_remote  => 'https://github.com/glarizza/hiera.git',
+     master        => 'ca.puppetlabs.local',
+     puppet_base   => '/etc/puppetlabs/puppet/environments',
+     puppet_remote => 'https://github.com/glarizza/puppet.git',
+     purge_hosts   => false,
+     r10k_enabled  => true,
+     vip           => 'puppet.puppetlabs.local',
+  }
+```
+
+####puppet_master::mom
+
+#####`dns_alt_names`
+Array of DNS Alt Names used for the server alias within the puppetmaster.conf fir pe-httpd
+Defaults to [ $::hostname, $::fqdn, 'puppet', "puppet.${::domain}"]
+Required.
+
+#####`hiera_base`
+Hiera data directory on node.
+Default is "${::settings::confdir}/hieradata".
+
+#####`hiera_file`
+Location of source for Hiera config file.
+Defaults to 'puppet:///modules/puppet_master/hiera.yaml'.
+
+#####`hiera_remote`
+URL of the remote GIT repo for Hiera.
+Required if ca_enabled is false.
+
+#####`puppet_base`
+Directory for the Puppet environments.
+Targeted towards directory environments.
+Default is "${::settings::confdir}/environments".
+
+#####`puppet_remote`
+URL of remote GIT repo for Puppetfile.
+Default is undef.
+
+#####`purge_hosts`
+Boolean value to determine if hosts file is purged of non-Puppet managed entries.
+Default is false.
+
+#####`r10k_enabled`
+Boolean value to determine if r10k is managed by Puppet.
+Default is true.
+
+#####`vip`
+VIP name that will be used in the site.pp for the filebucket location.
+Defaults to puppet.${::domain}
+Required.
+
+```puppet
+    class { 'puppet_master::mom':
+      hiera_base    => '/etc/puppetlabs/puppet/hieradata',
+      hiera_file    => '/tc/puppetlabs/puppet/hiera.yaml',
+      hiera_remote  => 'https://github.com/glarizza/hiera.git',
+      puppet_base   => '/etc/puppetlabs/puppet/environments',
+      puppet_remote => 'https://github.com/glarizza/puppet.git',
+      purge_hosts   => false,
+      r10k_enabled  => true,
+      vip           => 'puppet.puppetlabs.local',
+      dns_alt_names => ['ca','ca.puppetlabs.local','puppet','puppet.puppetlabs.local'],
+    }
+```
+
+####puppet_master::activemq
+
+######`keystore_passwd`
+Password for Java Keystore.
+No default!
+
+######`export_keys`
+Boolean value to determine if the exported ActiveMQ keys are imported.
+Default is in puppet_master::params
+Default is true.
+
+```puppet
+  class { 'puppet_master::activemq':
+    keystore_passwd => 'g@ry_w3@ars_fl0ppy_sh03s',
+    export_keys     => true,
+  }
+```
+
+####puppet_master::console
+
+#####`default_whitelist`
+An array of the default entries in the whitelist
+Default is [::fqdn, 'pe-internal-dashbaord']
+
+#####`all_in_one`
+Boolean value to determine if the node is an all-in-one installation or split
+Default is true.
+
+```puppet
+  class { 'puppet_master::console':
+     default_whitelist => [$::fqdn, 'pe-internal-dashbaord'],
+     all_in_one        => true,
+  }
+```
+
+####puppet_master::puppetdb
+
+#####`all_in_one`
+Boolean value to determine if the node is an all-in-one installation or split
+Default is true.
+
+#####`default_whitelist`
+An array of the default entries in the whitelist
+Default is [::fqdn, 'pe-internal-dashbaord']
+
+```puppet
+  class { 'puppet_master::puppetdb':
+     default_whitelist => [$::fqdn, 'pe-internal-dashboard'],
+     all_in_one        => true,
+  }
+```
+
 ###Defines
 * `puppet_master::console::whitelist_entry`: define type for PE Console certificate whitelist entry
 * `puppet_master::puppetdb::whitelist_entry`: define type for PE PuppetDB certificate whitelist entry
+
+####puppet_master::console::whitelist_entry
+
+#####`role`
+Role (permission) of the node. Can be 'read-write' or 'read-only'
+Default is 'read-write'.
+
+#####`order`
+Number of where to place the entry in the list
+Default is '10'.
+
+```puppet
+  puppet_master::console::whitelist_entry { 'com1.puppetlabs.local':
+     role  => [$::fqdn, 'pe-internal-dashbaord'],
+     order => '20',
+  }
+```
+
+####puppet_master::puppetdb::whitelist_entry
+
+```puppet
+  puppet_master::puppetdb::whitelist_entry { 'com1.puppetlabs.local': }
+```
 
 ## Limitations
 
