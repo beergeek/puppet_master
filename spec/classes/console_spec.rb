@@ -38,9 +38,9 @@ describe 'puppet_master::console' do
     }
 
     it {
-      should contain_concat__fragment('pe-internal-dashbaord').with(
+      should contain_concat__fragment('pe-internal-dashboard').with(
         'target'  => '/etc/puppetlabs/console-auth/certificate_authorization.yml',
-        'content' => "pe-internal-dashbaord:\n  role: read-write\n",
+        'content' => "pe-internal-dashboard:\n  role: read-write\n",
         'order'   => '02',
       )
     }

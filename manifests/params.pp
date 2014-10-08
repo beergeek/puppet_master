@@ -3,7 +3,7 @@ class puppet_master::params {
   $all_in_one         = true
   $ca_enabled         = false
   $ca_server          = $::settings::server
-  $default_whitelist  = [$::fqdn, 'pe-internal-dashbaord']
+  $default_whitelist  = [$::clientcert, 'pe-internal-dashboard']
   $export_keys        = true
   $hiera_backends     = ['yaml']
   $hiera_base         = '/etc/puppetlabs/puppet/hieradata'

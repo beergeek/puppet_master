@@ -11,14 +11,9 @@
 #   Boolean value to determine if the node is an all-in-one installation or split
 #   Default is true.
 #
-# [*default_whitelist*]
-#   An array of the default entries in the whitelist
-#   Default is [::fqdn, 'pe-internal-dashbaord']
-#
 # === Examples
 #
 #  class { puppet_master::console:
-#     default_whitelist => [$::fqdn, 'pe-internal-dashbaord'],
 #     all_in_one        => true,
 #  }
 #
@@ -32,7 +27,6 @@
 #
 class puppet_master::console (
   $all_in_one        = $puppet_master::console::all_in_one,
-  $default_whitelist = $puppet_master::console::default_whitelist,
 ) {
 
   if ! defined(Class['puppet_master::httpd']) {
@@ -59,16 +53,16 @@ class puppet_master::console (
   }
 
   if $all_in_one == false {
-    concat::fragment { $::fqdn:
+    concat::fragment { $::clientcert:
       target  => '/etc/puppetlabs/console-auth/certificate_authorization.yml',
-      content => "${::fqdn}:\n  role: read-write\n",
+      content => "${::clientcert}:\n  role: read-write\n",
       order   => '02',
     }
   }
 
-  concat::fragment { 'pe-internal-dashbaord':
+  concat::fragment { 'pe-internal-dashboard':
     target  => '/etc/puppetlabs/console-auth/certificate_authorization.yml',
-    content => "pe-internal-dashbaord:\n  role: read-write\n",
+    content => "pe-internal-dashboard:\n  role: read-write\n",
     order   => '02',
   }
 

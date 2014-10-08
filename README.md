@@ -93,7 +93,6 @@ For the PuppetDB instance (the MOM in an all-in-one) perform:
 For the Console instance (the MOM in an all-in-one) perform:
 ```puppet
   class { puppet_master::console:
-     default_whitelist => [$::fqdn, 'pe-internal-dashbaord'],
      all_in_one        => true,
   }
 ```
@@ -310,17 +309,12 @@ Default is true.
 
 ####puppet_master::console
 
-#####`default_whitelist`
-An array of the default entries in the whitelist
-Default is [::fqdn, 'pe-internal-dashbaord']
-
 #####`all_in_one`
 Boolean value to determine if the node is an all-in-one installation or split
 Default is true.
 
 ```puppet
   class { 'puppet_master::console':
-     default_whitelist => [$::fqdn, 'pe-internal-dashbaord'],
      all_in_one        => true,
   }
 ```
@@ -333,7 +327,7 @@ Default is true.
 
 #####`default_whitelist`
 An array of the default entries in the whitelist
-Default is [::fqdn, 'pe-internal-dashbaord']
+Default is [::fqdn, 'pe-internal-dashboard']
 
 ```puppet
   class { 'puppet_master::puppetdb':
@@ -358,7 +352,7 @@ Default is '10'.
 
 ```puppet
   puppet_master::console::whitelist_entry { 'com1.puppetlabs.local':
-     role  => [$::fqdn, 'pe-internal-dashbaord'],
+     role  => [$::fqdn, 'pe-internal-dashboard'],
      order => '20',
   }
 ```

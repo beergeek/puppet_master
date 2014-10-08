@@ -145,8 +145,8 @@ class puppet_master::compile (
   Host <<| tag == 'masters' |>>
 
   #export for PuppetDB and Console certificate
-  @@puppet_master::console::whitelist_entry { $::fqdn: }
-  @@puppet_master::puppetdb::whitelist_entry { $::fqdn: }
+  @@puppet_master::console::whitelist_entry { $::clientcert: }
+  @@puppet_master::puppetdb::whitelist_entry { $::clientcert: }
 
   # manage our Hiera config
   file { '/etc/puppetlabs/puppet/hiera.yaml':

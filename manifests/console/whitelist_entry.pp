@@ -15,7 +15,7 @@
 # === Examples
 #
 #  puppet_master::console::whitelist_entry { 'com1.puppetlabs.local':
-#     role  => [$::fqdn, 'pe-internal-dashbaord'],
+#     role  => 'read-write',
 #     order => '20',
 #  }
 #

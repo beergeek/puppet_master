@@ -13,12 +13,12 @@
 #
 # [*default_whitelist*]
 #   An array of the default entries in the whitelist.
-#   Defaults to [$::fqdn, 'pe-internal-dashboard'].
+#   Defaults to [$::clientcert, 'pe-internal-dashboard'].
 #
 # === Examples
 #
 #  class { 'puppet_master::puppetdb':
-#     default_whitelist => [$::fqdn, 'pe-internal-dashboard'],
+#     default_whitelist => [$::clientcert, 'pe-internal-dashboard'],
 #     all_in_one        => true,
 #  }
 #
