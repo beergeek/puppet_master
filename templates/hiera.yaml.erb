@@ -1,11 +1,14 @@
 ---
 :backends:
-  - yaml
+<% @hiera_backends.each do |backend| -%>
+  - <%= backend %>
+<% end -%>
 :hierarchy:
-  - "%{clientcert}"
-  - "%{tier}"
-  - "os/%{osfamily}"
-  - global
+<% @hiera_hierarchy.each do |level| -%>
+  - <%= level %>
+<% end -%>
 
-:yaml:
-   :datadir: "/etc/puppetlabs/puppet/hieradata/%{environment}"
+<% @hiera_backends.each do |backend| -%>
+:<%= @backend %>:
+  :datadir: "<%= @hiera_file %>"
+<% end -%>

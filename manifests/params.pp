@@ -6,14 +6,14 @@ class puppet_master::params {
   $default_whitelist  = [$::fqdn, 'pe-internal-dashbaord']
   $export_keys        = true
   $hiera_backends     = ['yaml']
-  $hiera_base         = "${::settings::confdir}/hieradata"
+  $hiera_base         = '/etc/puppetlabs/puppet/hieradata'
   $hiera_hierarchy    = ['%{clientcert}','global']
   $hiera_remote       = undef
   $hiera_template     = 'puppet_master/hiera.yaml.erb'
   $manage_console     = false
   $manage_master      = true
   $master             = $::fqdn
-  $puppet_base        = "${::settings::confdir}/environments"
+  $puppet_base        = '/etc/puppetlabs/puppet/environments'
   $puppet_remote      = undef
   $purge_hosts        = false
   $r10k_enabled       = true
