@@ -131,7 +131,7 @@ and
     export_keys     => true,
   }
 ```
-Classify the new COM with the above, plus pe_mcoolective::activemq
+Classify the new COM with the above, plus `pe_mcollective::activemq`
 
 ## Usage
 
