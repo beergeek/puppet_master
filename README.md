@@ -96,6 +96,8 @@ For the Console instance (the MOM in an all-in-one) perform:
      all_in_one        => true,
   }
 ```
+The `activemq_brokers` parameter should be set for the MOM to include the MOM and all COM servers.
+The `stomp_password` parameter should be set for all MCollective instances.
 
 For Compile masters, the MOM must exist first.
 Create an answers file with:
@@ -129,6 +131,7 @@ and
     export_keys     => true,
   }
 ```
+Classify the new COM with the above, plus pe_mcoolective::activemq
 
 ## Usage
 
