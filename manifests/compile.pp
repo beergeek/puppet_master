@@ -17,13 +17,21 @@
 #   Array of DNS Alt Names used for the server alias within the puppetmaster.conf for pe-httpd
 #   Defaults to [ $::hostname, $::fqdn, 'puppet', "puppet.${::domain}"]
 #
+# [*hiera_backends*]
+#   Array of backends to include in the hiera.yaml file.
+#   Default is ['yaml'].
+#
 # [*hiera_base*]
 #   Hiera data directory on node.
 #   Default is "${::settings::confdir}/hieradata".
 #
-# [*hiera_file*]
-#   Location of source for Hiera config file.
-#   Defaults to 'puppet:///modules/puppet_master/hiera.yaml'.
+# [*hiera_template*]
+#   Location of templatee for Hiera config file.
+#   Defaults to 'puppet_master/hiera.yaml.erb'.
+#
+# [*hiera_hierarchy*]
+#   Hierarchy to be included in the hiera.yaml file
+#   Default is ['%{clientcert}','global'].
 #
 # [*hiera_remote*]
 #   URL of the remote GIT repo for Hiera.
@@ -59,18 +67,20 @@
 # === Examples
 #
 #  class { puppet_master::compile':
-#     ca_enabled    => false,
-#     ca_server     => 'ca.puppetlabs.local'
-#     dns_alt_names => ['com1','com1.puppetlabs.local','puppet','puppet.puppetlabs.local'],
-#     hiera_base    => '/etc/puppetlabs/puppet/hieradata',
-#     hiera_file    => 'puppet:///modules/puppet_master/hiera.yaml',
-#     hiera_remote  => 'https://github.com/glarizza/hiera.git',
-#     master        => 'ca.puppetlabs.local',
-#     puppet_base   => '/etc/puppetlabs/puppet/environments',
-#     puppet_remote => 'https://github.com/glarizza/puppet.git',
-#     purge_hosts   => false,
-#     r10k_enabled  => true,
-#     vip           => 'puppet.puppetlabs.local',
+#     ca_enabled      => false,
+#     ca_server       => 'ca.puppetlabs.local'
+#     dns_alt_names   => ['com1','com1.puppetlabs.local','puppet','puppet.puppetlabs.local'],
+#     hiera_backends  => ['yaml'],
+#     hiera_base      => '/etc/puppetlabs/puppet/hieradata',
+#     hiera_hierarchy => ['%{clientcert}','global'],
+#     hiera_remote    => 'https://github.com/glarizza/hiera.git',
+#     hiera_template  => 'puppet_master/hiera.yaml.erb',
+#     master          => 'ca.puppetlabs.local',
+#     puppet_base     => '/etc/puppetlabs/puppet/environments',
+#     puppet_remote   => 'https://github.com/glarizza/puppet.git',
+#     purge_hosts     => false,
+#     r10k_enabled    => true,
+#     vip             => 'puppet.puppetlabs.local',
 #  }
 #
 # === Authors
@@ -82,24 +92,28 @@
 # Copyright 2014 Brett Gray.
 #
 class puppet_master::compile (
-  $ca_enabled    = $puppet_master::params::ca_enabled,
-  $ca_server     = $puppet_master::params::ca_server,
-  $dns_alt_names = $puppet_master::params::dns_alt_names,
-  $hiera_base    = $puppet_master::params::hiera_base,
-  $hiera_file    = $puppet_master::params::hiera_file,
-  $hiera_remote  = $puppet_master::params::hiera_remote,
-  $master        = $puppet_master::params::master,
-  $puppet_base   = $puppet_master::params::puppet_base,
-  $puppet_remote = $puppet_master::params::puppet_remote,
-  $purge_hosts   = $puppet_master::params::purge_hosts,
-  $r10k_enabled  = $puppet_master::params::r10k_enabled,
-  $vip           = $puppet_master::params::vip,
+  $ca_enabled       = $puppet_master::params::ca_enabled,
+  $ca_server        = $puppet_master::params::ca_server,
+  $dns_alt_names    = $puppet_master::params::dns_alt_names,
+  $hiera_base       = $puppet_master::params::hiera_base,
+  $hiera_backends   = $puppet_master::params::hiera_backends,
+  $hiera_template   = $puppet_master::params::hiera_file,
+  $hiera_hierarchy  = $puppet_master::params::hiera_hierarchy,
+  $hiera_remote     = $puppet_master::params::hiera_remote,
+  $master           = $puppet_master::params::master,
+  $puppet_base      = $puppet_master::params::puppet_base,
+  $puppet_remote    = $puppet_master::params::puppet_remote,
+  $purge_hosts      = $puppet_master::params::purge_hosts,
+  $r10k_enabled     = $puppet_master::params::r10k_enabled,
+  $vip              = $puppet_master::params::vip,
 ) inherits puppet_master::params {
 
   validate_bool($ca_enabled)
   validate_bool($purge_hosts)
   validate_bool($r10k_enabled)
   validate_array($dns_alt_names)
+  validate_array($hiera_backends)
+  validate_array($hiera_hierarchy)
   validate_absolute_path($puppet_base)
   validate_absolute_path($hiera_base)
 
@@ -136,10 +150,10 @@ class puppet_master::compile (
 
   # manage our Hiera config
   file { '/etc/puppetlabs/puppet/hiera.yaml':
-    ensure => file,
-    owner  => 'root',
-    group  => 'root',
-    source => $hiera_file,
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    content => template($hiera_template),
   }
 
   # manage the main site.pp (as we are managing the filebucket

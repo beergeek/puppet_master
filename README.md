@@ -155,6 +155,10 @@ Required if ca_enabled is false.
 Array of DNS Alt Names used for the server alias within the puppetmaster.conf for pe-httpd
 Defaults to [ $::hostname, $::fqdn, 'puppet', "puppet.${::domain}"]
 
+#####`hiera_backends`
+Array of backends to include in the hiera.yaml file.
+Default is ['yaml'].
+
 #####`hiera_base`
 Hiera data directory on node.
 Default is "${::settings::confdir}/hieradata".
@@ -162,6 +166,10 @@ Default is "${::settings::confdir}/hieradata".
 #####`hiera_file`
 Location of source for Hiera config file.
 Defaults to 'puppet:///modules/puppet_master/hiera.yaml'.
+
+#####`hiera_hierarchy`
+Hierarchy to be included in the hiera.yaml file
+Default is ['%{clientcert}','global'].
 
 #####`hiera_remote`
 URL of the remote GIT repo for Hiera.
@@ -196,18 +204,20 @@ Required.
 
 ```puppet
   class { 'puppet_master::compile':
-     ca_enabled    => false,
-     ca_server     => 'ca.puppetlabs.local'
-     dns_alt_names => ['com1','com1.puppetlabs.local','puppet','puppet.puppetlabs.local'],
-     hiera_base    => '/etc/puppetlabs/puppet/hieradata',
-     hiera_file    => '/tc/puppetlabs/puppet/hiera.yaml',
-     hiera_remote  => 'https://github.com/glarizza/hiera.git',
-     master        => 'ca.puppetlabs.local',
-     puppet_base   => '/etc/puppetlabs/puppet/environments',
-     puppet_remote => 'https://github.com/glarizza/puppet.git',
-     purge_hosts   => false,
-     r10k_enabled  => true,
-     vip           => 'puppet.puppetlabs.local',
+     ca_enabled      => false,
+     ca_server       => 'ca.puppetlabs.local'
+     dns_alt_names   => ['com1','com1.puppetlabs.local','puppet','puppet.puppetlabs.local'],
+     hiera_backends  => ['yaml'],
+     hiera_base      => '/etc/puppetlabs/puppet/hieradata',
+     hiera_hierarchy => ['%{clientcert}','global'],
+     hiera_remote    => 'https://github.com/glarizza/hiera.git',
+     hiera_template  => 'puppet_master/hiera.yaml.erb',
+     master          => 'ca.puppetlabs.local',
+     puppet_base     => '/etc/puppetlabs/puppet/environments',
+     puppet_remote   => 'https://github.com/glarizza/puppet.git',
+     purge_hosts     => false,
+     r10k_enabled    => true,
+     vip             => 'puppet.puppetlabs.local',
   }
 ```
 
@@ -218,6 +228,10 @@ Array of DNS Alt Names used for the server alias within the puppetmaster.conf fi
 Defaults to [ $::hostname, $::fqdn, 'puppet', "puppet.${::domain}"]
 Required.
 
+#####`hiera_backends`
+Array of backends to include in the hiera.yaml file.
+Default is ['yaml'].
+
 #####`hiera_base`
 Hiera data directory on node.
 Default is "${::settings::confdir}/hieradata".
@@ -225,6 +239,10 @@ Default is "${::settings::confdir}/hieradata".
 #####`hiera_file`
 Location of source for Hiera config file.
 Defaults to 'puppet:///modules/puppet_master/hiera.yaml'.
+
+#####`hiera_hierarchy`
+Hierarchy to be included in the hiera.yaml file
+Default is ['%{clientcert}','global'].
 
 #####`hiera_remote`
 URL of the remote GIT repo for Hiera.
@@ -254,15 +272,17 @@ Required.
 
 ```puppet
     class { 'puppet_master::mom':
-      hiera_base    => '/etc/puppetlabs/puppet/hieradata',
-      hiera_file    => '/tc/puppetlabs/puppet/hiera.yaml',
-      hiera_remote  => 'https://github.com/glarizza/hiera.git',
-      puppet_base   => '/etc/puppetlabs/puppet/environments',
-      puppet_remote => 'https://github.com/glarizza/puppet.git',
-      purge_hosts   => false,
-      r10k_enabled  => true,
-      vip           => 'puppet.puppetlabs.local',
-      dns_alt_names => ['ca','ca.puppetlabs.local','puppet','puppet.puppetlabs.local'],
+      dns_alt_names   => ['ca','ca.puppetlabs.local','puppet','puppet.puppetlabs.local'],
+      hiera_backends  => ['yaml'],
+      hiera_base      => '/etc/puppetlabs/puppet/hieradata',
+      hiera_hierarchy => ['%{clientcert}','global'],
+      hiera_remote    => 'https://github.com/glarizza/hiera.git',
+      hiera_template  => '/tc/puppetlabs/puppet/hiera.yaml',
+      puppet_base     => '/etc/puppetlabs/puppet/environments',
+      puppet_remote   => 'https://github.com/glarizza/puppet.git',
+      purge_hosts     => false,
+      r10k_enabled    => true,
+      vip             => 'puppet.puppetlabs.local',
     }
 ```
 
