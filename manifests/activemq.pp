@@ -33,6 +33,12 @@ class puppet_master::activemq (
   $export_keys      = $puppet_master::params::export_keys,
 ) inherits puppet_master::params {
 
+  File {
+    owner => 'pe-puppet',
+    group => 'pe-puppet',
+    mode  => '0644',
+  }
+
   # Welcome to crazy town for ActiveMQ and MCO!
   if $export_keys {
 
