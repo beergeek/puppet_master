@@ -7,7 +7,7 @@ class puppet_master::params {
   $export_keys        = true
   $hiera_backends     = ['yaml']
   $hiera_base         = '/etc/puppetlabs/puppet/hieradata'
-  $hiera_hierarchy    = ['%{clientcert}','global']
+  $hiera_hierarchy    = ['"%{clientcert}"','global']
   $hiera_remote       = undef
   $hiera_template     = 'puppet_master/hiera.yaml.erb'
   $manage_console     = false

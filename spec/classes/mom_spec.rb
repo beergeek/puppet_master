@@ -3,7 +3,6 @@ describe 'puppet_master::mom' do
   before do
     Puppet[:confdir]    = '/etc/puppetlabs/puppet'
     Puppet[:server]     = 'ca.puppetlabs.local'
-    Puppet[:clientcert] = 'ca.puppetlabs.local'
   end
 
   context 'with defaults and required for all parameters' do
@@ -31,7 +30,7 @@ describe 'puppet_master::mom' do
         'dns_alt_names'   => ['ca','ca.puppetlabs.local','puppet','puppet.puppetlabs.local'],
         'hiera_backends'  => ['yaml'],
         'hiera_base'      => '/etc/puppetlabs/puppet/hieradata',
-        'hiera_hierarchy' => ['#{clientcert}','global'],
+        'hiera_hierarchy' => ['%{clientcert}','global'],
         'hiera_remote'    => 'https://github.com/glarizza/hiera.git',
         'hiera_template'  => 'puppet_master/hiera.yaml.erb',
         'master'          => 'ca.puppetlabs.local',

@@ -86,7 +86,7 @@ class puppet_master::mom (
   $puppet_remote    = $puppet_master::params::puppet_remote,
   $purge_hosts      = $puppet_master::params::purge_hosts,
   $r10k_enabled     = $puppet_master::params::r10k_enabled,
-  $vip              = $puppet_master::params::vip,
+  $vip              = $clientcert,
 ) {
 
   class { 'puppet_master::compile':
