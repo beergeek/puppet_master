@@ -40,7 +40,7 @@ describe 'puppet_master::compile' do
         'group'  => 'root',
         'mode'   => '0644',
       ).with_content(/backends:\n  - yaml/)
-      .with_content(/hierarchy:\n  - \%\{clientcert\}/)
+      .with_content(/hierarchy:\n  - "%{clientcert}"/)
     }
 
     it {
@@ -157,7 +157,7 @@ describe 'puppet_master::compile' do
         'group'  => 'root',
         'mode'   => '0644',
       ).with_content(/backends:\n  - yaml/)
-      .with_content(/hierarchy:\n  - \%\{clientcert\}/)
+      .with_content(/hierarchy:\n  - "%{clientcert}"/)
     }
 
     it {
