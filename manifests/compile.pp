@@ -97,7 +97,7 @@ class puppet_master::compile (
   $dns_alt_names    = $puppet_master::params::dns_alt_names,
   $hiera_base       = $puppet_master::params::hiera_base,
   $hiera_backends   = $puppet_master::params::hiera_backends,
-  $hiera_template   = $puppet_master::params::hiera_file,
+  $hiera_template   = $puppet_master::params::hiera_template,
   $hiera_hierarchy  = $puppet_master::params::hiera_hierarchy,
   $hiera_remote     = $puppet_master::params::hiera_remote,
   $master           = $puppet_master::params::master,
