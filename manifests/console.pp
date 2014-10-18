@@ -29,6 +29,9 @@ class puppet_master::console (
   $all_in_one        = $puppet_master::console::all_in_one,
 ) {
 
+  #validation
+  validate_bool($all_in_one)
+
   if ! defined(Class['puppet_master::httpd']) {
     class { 'puppet_master::httpd':
      ca_enabled     => true,

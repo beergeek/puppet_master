@@ -35,6 +35,9 @@ class puppet_master::puppetdb (
   $default_whitelist = $puppet_master::params::default_whitelist,
 ) inherits puppet_master::params {
 
+  #validation
+  validate_bool($all_in_one)
+
   file { '/etc/puppetlabs/puppetdb/certificate-whitelist':
     ensure => file,
     owner  => 'pe-puppetdb',

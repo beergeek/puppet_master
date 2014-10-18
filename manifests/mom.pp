@@ -89,6 +89,13 @@ class puppet_master::mom (
   $vip              = $clientcert,
 ) {
 
+  #validation
+  validate_array($dns_alt_names)
+  validate_absolute_path($puppet_base)
+  validate_absolute_path($hiera_base)
+  validate_bool($purge_hosts)
+  validate_bool($r10k_enabled)
+
   class { 'puppet_master::compile':
     ca_enabled      => true,
     dns_alt_names   => $dns_alt_names,

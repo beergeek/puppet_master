@@ -33,6 +33,12 @@ class puppet_master::activemq (
   $export_keys      = $puppet_master::params::export_keys,
 ) inherits puppet_master::params {
 
+  #validation
+  validate_bool($export_keys)
+  if ! defined(Class['pe_mcollective::activemq']) {
+    fail('The `pe_mcollective::activemq` class must be included in the catalog')
+  }
+
   File {
     owner => 'pe-puppet',
     group => 'pe-puppet',

@@ -25,7 +25,7 @@
 #
 # [*manage_console*]
 # Boolean value determining if the puppetdashboard.conf file we be managed.
-# Value does not function currently.
+# Value does not currently function.
 #
 # === Examples
 #
@@ -51,6 +51,12 @@ class puppet_master::httpd (
   $manage_console = $puppet_master::params::manage_console,
   $manage_master  = $puppet_master::params::manage_master,
 ) inherits puppet_master::params {
+
+  #validation
+  validate_bool($ca_enabled)
+  validate_bool($manage_console)
+  validate_bool($manage_master)
+  validate_array($dns_alt_names)
 
   File {
     owner  => 'root',
