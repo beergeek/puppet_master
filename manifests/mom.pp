@@ -87,7 +87,7 @@ class puppet_master::mom (
   $purge_hosts      = $puppet_master::params::purge_hosts,
   $r10k_enabled     = $puppet_master::params::r10k_enabled,
   $vip              = $clientcert,
-) {
+) inherits puppet_master::params {
 
   #validation
   validate_array($dns_alt_names)

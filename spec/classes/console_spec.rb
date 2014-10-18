@@ -17,6 +17,11 @@ describe 'puppet_master::console' do
         :concat_basedir => '/tmp',
       }
     }
+    let(:params) {
+      {
+        :all_in_one   => true,
+      }
+    }
 
     it { should contain_class('puppet_master::console') }
 
