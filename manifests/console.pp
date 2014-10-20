@@ -26,7 +26,7 @@
 # Copyright 2014 Your name here, unless otherwise noted.
 #
 class puppet_master::console (
-  $all_in_one        = $puppet_master::console::all_in_one,
+  $all_in_one        = $puppet_master::params::all_in_one,
 ) {
 
   #validation
