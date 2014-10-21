@@ -23,16 +23,16 @@
     {
       "name": "zack-r10k",
       "version_requirement": ">= 2.3.0"
-    }
+    },
     {
       "name": "puppetlabs-pe_mcollective",
-      "version_requirement": ">= v0.2.10"
-    }
+      "version_requirement": ">= 0.2.10"
+    },
     {
       "name": "puppetlabs/java_ks",
       "version_requirement": "1.2.x"
     }
-  ]
+  ],
   "operatingsystem_support": [
     {
       "operatingsystem":"RedHat",
