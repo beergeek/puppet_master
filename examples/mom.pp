@@ -74,7 +74,7 @@ class profiles::mom {
   cron { 'puppet_console_dumps':
     ensure  => present,
     command => "su - pe-postgres -s /bin/bash -c '/opt/puppet/bin/pg_dump -Fc -C -c -p 5432 console' > ${dump_path}/console_`date +'%Y%m%d%H%M'`",
-    user    => 'root'
+    user    => 'root',
     hour    => '23',
     minute  => '30',
     day     => '*',
@@ -84,7 +84,7 @@ class profiles::mom {
   cron { 'puppet_console_auth_dumps':
     ensure  => present,
     command => "su - pe-postgres -s /bin/bash -c '/opt/puppet/bin/pg_dump -Fc -C -c -p 5432 console_auth' > ${dump_path}/console_auth_`date +'%Y%m%d%H%M'`",
-    user    => 'root'
+    user    => 'root',
     hour    => '23',
     minute  => '30',
     day     => '*',
@@ -94,7 +94,7 @@ class profiles::mom {
   cron { 'puppet_puppetdb_dumps':
     ensure  => present,
     command => "su - pe-postgres -s /bin/bash -c '/opt/puppet/bin/pg_dump -Fc -C -c -p 5432 puppetdb' > ${dump_path}/puppetdb_`date +'%Y%m%d%H%M'`",
-    user    => 'root'
+    user    => 'root',
     hour    => '23',
     minute  => '30',
     day     => '*',
