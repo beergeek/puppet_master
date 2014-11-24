@@ -93,7 +93,7 @@ class profiles::mom {
 
   cron { 'puppet_puppetdb_dumps':
     ensure  => present,
-    command => "su - pe-postgres -s /bin/bash -c '/opt/puppet/bin/pg_dump -Fc -C -c -p 5432 puppetdb' > ${dump_path}/puppetdb_`date +'%Y%m%d%H%M'`",
+    command => "su - pe-postgres -s /bin/bash -c '/opt/puppet/bin/pg_dump -Fc -C -c -p 5432 pe-puppetdb' > ${dump_path}/puppetdb_`date +'%Y%m%d%H%M'`",
     user    => 'root',
     hour    => '23',
     minute  => '30',
